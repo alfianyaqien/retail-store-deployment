@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "orders.fullname" . }}
+  name: {{ include "ui.fullname" . }}
   labels:
-    {{- include "orders.labels" . | nindent 4 }}
+    {{- include "ui.labels" . | nindent 4 }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -14,24 +14,24 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      {{- include "orders.selectorLabels" . | nindent 6 }}
+      {{- include "ui.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
-        {{- include "orders.podAnnotations" . | nindent 8 }}
+        {{- include "ui.podAnnotations" . | nindent 8 }}
         {{- if and .Values.opentelemetry.enabled .Values.opentelemetry.instrumentation }}
         instrumentation.opentelemetry.io/inject-sdk: {{ .Values.opentelemetry.instrumentation }}
         {{- end }}
       {{- end }}
       labels:
-        {{- include "orders.selectorLabels" . | nindent 8 }}
+        {{- include "ui.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "orders.serviceAccountName" . }}
+      serviceAccountName: {{ include "ui.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -39,34 +39,12 @@ spec:
           env:
             - name: JAVA_OPTS
               value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
-            - name: SPRING_DATASOURCE_WRITER_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mysql.secret.name }}
-                  key: username
-            - name: SPRING_DATASOURCE_WRITER_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mysql.secret.name }}
-                  key: password
-            - name: SPRING_DATASOURCE_READER_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mysql.reader.secret.name }}
-                  key: username
-            - name: SPRING_DATASOURCE_READER_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.mysql.reader.secret.name }}
-                  key: password
           envFrom:
-            - secretRef:
-                name: {{ .Values.rabbitmq.secret.name }}
             - configMapRef:
-                name: {{ include "orders.configMapName" . }}
+                name: {{ include "ui.configMapName" . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.appImage }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

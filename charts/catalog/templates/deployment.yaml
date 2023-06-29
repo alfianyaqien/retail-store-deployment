@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ui.fullname" . }}
+  name: {{ include "catalog.fullname" . }}
   labels:
-    {{- include "ui.labels" . | nindent 4 }}
+    {{- include "catalog.labels" . | nindent 4 }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -14,37 +14,45 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      {{- include "ui.selectorLabels" . | nindent 6 }}
+      {{- include "catalog.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
-        {{- include "ui.podAnnotations" . | nindent 8 }}
+        {{- include "catalog.podAnnotations" . | nindent 8 }}
         {{- if and .Values.opentelemetry.enabled .Values.opentelemetry.instrumentation }}
         instrumentation.opentelemetry.io/inject-sdk: {{ .Values.opentelemetry.instrumentation }}
         {{- end }}
       {{- end }}
       labels:
-        {{- include "ui.selectorLabels" . | nindent 8 }}
+        {{- include "catalog.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "ui.serviceAccountName" . }}
+      serviceAccountName: {{ include "catalog.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           env:
-            - name: JAVA_OPTS
-              value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mysql.secret.name }}
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mysql.secret.name }}
+                  key: password
           envFrom:
             - configMapRef:
-                name: {{ include "ui.configMapName" . }}
+                name: {{ include "catalog.configMapName" . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.appImage }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -52,9 +60,9 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /actuator/health/liveness
+              path: /health
               port: 8080
-            initialDelaySeconds: 45
+            initialDelaySeconds: 30
             periodSeconds: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
