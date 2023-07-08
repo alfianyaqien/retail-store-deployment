@@ -6,10 +6,6 @@ pipeline {
     nodejs "nodejs"
   }
 
-  parameters {
-    // Define parameters if needed
-  }
-
   environment {
     registry = "alfianyaqien/devopstest"
     registryCredential = 'dockerhub'
