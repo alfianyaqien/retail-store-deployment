@@ -119,40 +119,29 @@ pipeline {
       agent {label 'KOPS'}
       steps {
         // Deploy Spring Boot UI
-        dir('ui') {
-          // Deploy using Kubernetes manifests or Helm charts
-          sh "helm upgrade --install --force retail-ui charts/ui --set appImage=${registry}:V${BUILD_NUMBER}-ui --namespace prod"
-        }
+        // Deploy using Kubernetes manifests or Helm charts
+        sh "helm upgrade --install --force retail-ui charts/ui --set appImage=${registry}:V${BUILD_NUMBER}-ui --namespace prod"
 
         // Deploy Golang Product Catalog API
-        dir('catalog') {
-          // Deploy using Kubernetes manifests or Helm charts
-          sh "helm upgrade --install --force retail-catalog charts/catalog --set appImage=${registry}:V${BUILD_NUMBER}-catalog --namespace prod"
-        }
+        // Deploy using Kubernetes manifests or Helm charts
+        sh "helm upgrade --install --force retail-catalog charts/catalog --set appImage=${registry}:V${BUILD_NUMBER}-catalog --namespace prod"
 
         // Deploy Spring Boot User Shopping Carts API
-        // dir('cart') {
-        //   // Deploy using Kubernetes manifests or Helm charts
-        //   sh "helm upgrade --install --force retail-cart charts/carts --set appImage=${registry}:V${BUILD_NUMBER}-cart --namespace prod"
-        // }
+
+      //   // Deploy using Kubernetes manifests or Helm charts
+      //   sh "helm upgrade --install --force retail-cart charts/carts --set appImage=${registry}:V${BUILD_NUMBER}-cart --namespace prod"
 
         // Deploy Spring Boot User Orders API
-        dir('orders') {
-          // Deploy using Kubernetes manifests or Helm charts
-          sh "helm upgrade --install --force retail-orders charts/orders --set appImage=${registry}:V${BUILD_NUMBER}-orders --namespace prod"
-        }
+        // Deploy using Kubernetes manifests or Helm charts
+        sh "helm upgrade --install --force retail-orders charts/orders --set appImage=${registry}:V${BUILD_NUMBER}-orders --namespace prod"
 
         // Deploy NestJS Checkout API
-        dir('checkout') {
-          // Deploy using Kubernetes manifests or Helm charts
-          sh "helm upgrade --install --force retail-checkout charts/checkout --set appImage=${registry}:V${BUILD_NUMBER}-checkout --namespace prod"
-        }
+        // Deploy using Kubernetes manifests or Helm charts
+        sh "helm upgrade --install --force retail-checkout charts/checkout --set appImage=${registry}:V${BUILD_NUMBER}-checkout --namespace prod"
 
         // Deploy NGINX for serving static assets
-        dir('assets') {
-          // Deploy using Kubernetes manifests or Helm charts
-          sh "helm upgrade --install --force retail-assets charts/assets --set appImage=${registry}:V${BUILD_NUMBER}-assets --namespace prod"
-        }
+        // Deploy using Kubernetes manifests or Helm charts
+        sh "helm upgrade --install --force retail-assets charts/assets --set appImage=${registry}:V${BUILD_NUMBER}-assets --namespace prod"
       }
     }
   }
