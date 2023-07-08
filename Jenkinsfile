@@ -2,7 +2,6 @@ pipeline {
   agent any
   
   tools {
-    docker "docker"
     go "go"
     nodejs "nodejs"
   }
