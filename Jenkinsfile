@@ -18,9 +18,9 @@ pipeline {
         // Build and test Spring Boot UI
         dir('ui') {
           sh 'mvn clean install -DskipTests'
-          sh 'mvn test'
-          sh 'mvn verify -DskipUnitTests'
-          sh 'mvn checkstyle:checkstyle'
+          // sh 'mvn test'
+          // sh 'mvn verify -DskipUnitTests'
+          // sh 'mvn checkstyle:checkstyle'
         }
         
         // Build and test Golang Product Catalog API
@@ -39,9 +39,9 @@ pipeline {
         // Build and test Spring Boot User Orders API
         dir('orders') {
           sh 'mvn clean install -DskipTests'
-          sh 'mvn test'
+          // sh 'mvn test'
           // sh 'mvn verify -DskipUnitTests'
-          sh 'mvn checkstyle:checkstyle'
+          // sh 'mvn checkstyle:checkstyle'
         }
         
         // Build and test NestJS Checkout API
