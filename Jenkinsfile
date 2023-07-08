@@ -2,6 +2,7 @@ pipeline {
   agent any
   
   tools {
+    maven "maven"
     go "go"
     nodejs "nodejs"
   }
