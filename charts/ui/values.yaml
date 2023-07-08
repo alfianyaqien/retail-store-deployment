@@ -71,11 +71,11 @@ configMap:
   create: true
   name: # if blank this will be generated
 
-endpoints:
-  catalog: catalog.prod.svc.cluster.local:80
-  carts: carts.prod.svc.cluster.local:80
-  orders: orders.prod.svc.cluster.local:80
-  assets: assets.prod.svc.cluster.local:80
+endpoints: {}
+  # catalog: catalog.prod.svc.cluster.local:80
+  # carts: carts.prod.svc.cluster.local:80
+  # orders: orders.prod.svc.cluster.local:80
+  # assets: assets.prod.svc.cluster.local:80
 
 ## Ingress for load balancer
 ingress:
