@@ -46,7 +46,7 @@ pipeline {
         
         // Build and test NestJS Checkout API
         dir('checkout') {
-          sh 'yarn install'
+          sh 'npm install'
         }
       }
     }
