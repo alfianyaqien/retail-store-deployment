@@ -81,7 +81,7 @@ pipeline {
         //     }
         //   }
         // }
-        sh "docker rmi -f $registry:V$BUILD_NUMBER-cart"
+        // sh "docker rmi -f $registry:V$BUILD_NUMBER-cart"
 
         dir('orders') {
           script {
@@ -124,7 +124,7 @@ pipeline {
 
         // Deploy Golang Product Catalog API
         // Deploy using Kubernetes manifests or Helm charts
-        // sh "helm upgrade --install --force retail-catalog charts/catalog --set appImage=${registry}:V${BUILD_NUMBER}-catalog --namespace prod"
+        sh "helm upgrade --install --force retail-catalog charts/catalog --set appImage=${registry}:V${BUILD_NUMBER}-catalog --namespace prod"
 
         // Deploy Spring Boot User Shopping Carts API
 
@@ -133,15 +133,15 @@ pipeline {
 
         // Deploy Spring Boot User Orders API
         // Deploy using Kubernetes manifests or Helm charts
-        // sh "helm upgrade --install --force retail-orders charts/orders --set appImage=${registry}:V${BUILD_NUMBER}-orders --namespace prod"
+        sh "helm upgrade --install --force retail-orders charts/orders --set appImage=${registry}:V${BUILD_NUMBER}-orders --namespace prod"
 
         // Deploy NestJS Checkout API
         // Deploy using Kubernetes manifests or Helm charts
-        // sh "helm upgrade --install --force retail-checkout charts/checkout --set appImage=${registry}:V${BUILD_NUMBER}-checkout --namespace prod"
+        sh "helm upgrade --install --force retail-checkout charts/checkout --set appImage=${registry}:V${BUILD_NUMBER}-checkout --namespace prod"
 
         // Deploy NGINX for serving static assets
         // Deploy using Kubernetes manifests or Helm charts
-        // sh "helm upgrade --install --force retail-assets charts/assets --set appImage=${registry}:V${BUILD_NUMBER}-assets --namespace prod"
+        sh "helm upgrade --install --force retail-assets charts/assets --set appImage=${registry}:V${BUILD_NUMBER}-assets --namespace prod"
       }
     }
   }
