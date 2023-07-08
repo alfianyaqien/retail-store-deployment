@@ -5,4 +5,4 @@ management:
         include: '*'
 
 server:
-  port: ${port:8080}
+  port: ${port:8090}
