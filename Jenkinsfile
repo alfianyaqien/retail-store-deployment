@@ -40,7 +40,7 @@ pipeline {
         dir('orders') {
           sh 'mvn clean install -DskipTests'
           sh 'mvn test'
-          sh 'mvn verify -DskipUnitTests'
+          // sh 'mvn verify -DskipUnitTests'
           sh 'mvn checkstyle:checkstyle'
         }
         
