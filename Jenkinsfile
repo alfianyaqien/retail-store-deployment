@@ -29,12 +29,12 @@ pipeline {
         }
         
         // Build and test Spring Boot User Shopping Carts API
-        // dir('cart') {
-        //   sh 'mvn clean install -DskipTests'
-        //   sh 'mvn test'
-        //   sh 'mvn verify -DskipUnitTests'
-        //   sh 'mvn checkstyle:checkstyle'
-        // }
+        dir('cart') {
+          sh 'mvn clean install -DskipTests'
+          // sh 'mvn test'
+          // sh 'mvn verify -DskipUnitTests'
+          // sh 'mvn checkstyle:checkstyle'
+        }
         
         // Build and test Spring Boot User Orders API
         dir('orders') {
@@ -73,15 +73,15 @@ pipeline {
         }
         sh "docker rmi -f $registry:V$BUILD_NUMBER-catalog"
 
-        // dir('cart') {
-        //   script {
-        //     dockerImage = docker.build registry + ":V$BUILD_NUMBER-cart"
-        //     docker.withRegistry('', registryCredential) {
-        //       dockerImage.push("V$BUILD_NUMBER-cart")
-        //     }
-        //   }
-        // }
-        // sh "docker rmi -f $registry:V$BUILD_NUMBER-cart"
+        dir('cart') {
+          script {
+            dockerImage = docker.build registry + ":V$BUILD_NUMBER-cart"
+            docker.withRegistry('', registryCredential) {
+              dockerImage.push("V$BUILD_NUMBER-cart")
+            }
+          }
+        }
+        sh "docker rmi -f $registry:V$BUILD_NUMBER-cart"
 
         dir('orders') {
           script {
@@ -129,7 +129,7 @@ pipeline {
         // Deploy Spring Boot User Shopping Carts API
 
       //   // Deploy using Kubernetes manifests or Helm charts
-      //   sh "helm upgrade --install --force retail-cart charts/carts --set appImage=${registry}:V${BUILD_NUMBER}-cart --namespace prod"
+        sh "helm upgrade --install --force retail-cart charts/carts --set appImage=${registry}:V${BUILD_NUMBER}-cart --namespace prod"
 
         // Deploy Spring Boot User Orders API
         // Deploy using Kubernetes manifests or Helm charts
